@@ -3,6 +3,12 @@ const nunjucks = require("nunjucks");
 const logger = require("morgan");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const flash = require("connect-flash");
+
+//passport
+
+const passport = require("passport");
+const session = require("express-session");
 
 // db 관련
 const db = require("./models");
@@ -16,6 +22,8 @@ class App {
 
     // 뷰엔진 셋팅
     this.setViewEngine();
+
+    this.setSession();
 
     // 미들웨어 셋팅
     this.setMiddleWare();
@@ -65,6 +73,23 @@ class App {
       autoescape: true,
       express: this.app,
     });
+  }
+
+  setSession() {
+    this.app.use(
+      session({
+        secret: "secret",
+        resave: false,
+        saveUninitialized: true,
+        cookie: {
+          maxAge: 2000 * 60 * 60,
+        },
+      })
+    );
+    this.app.use(passport.initialize());
+    this.app.use(passport.session());
+
+    this.app.use(flash());
   }
 
   setStatic() {
