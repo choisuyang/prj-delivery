@@ -7,5 +7,9 @@ const server = app.listen(port, function () {
 
 const listen = require("socket.io");
 const io = listen(server);
+
+io.use((socket, next) => {
+  app.sessionMiddleWare(socket.request, socket.request.res, next);
+});
 const socketConnection = require("./helpers/socketConnection");
 socketConnection(io);
