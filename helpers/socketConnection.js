@@ -1,7 +1,10 @@
+require("./removeByValue")();
+
 module.exports = (io) => {
   let userList = [];
   io.on("connection", (socket) => {
     // console.log("socket server connect");
+    console.log("-->", socket);
     const session = socket.request.session.passport;
     const user = typeof session !== "undifined" ? session.user : "";
 
@@ -10,6 +13,13 @@ module.exports = (io) => {
     }
 
     io.emit("join", userList);
+
+    socket.on("disconnect", () => {
+      userList.removeByValue(user.displayname);
+      io.emit("leave", userList);
+    });
+
+    socket.on("disconnect", () => {});
     socket.on("client message", (data) =>
       io.emit("server message", {
         message: data.message,

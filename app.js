@@ -78,7 +78,7 @@ class App {
   setSession() {
     const SequelizeStore = require("connect-session-sequelize")(session.Store);
     this.app.sessionMiddleWare = session({
-      secret: "fastcampus",
+      secret: "secret",
       resave: false,
       saveUninitialized: true,
       cookie: {
