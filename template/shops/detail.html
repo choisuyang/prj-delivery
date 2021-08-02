@@ -61,7 +61,7 @@
         <ul class="menu-list">
           {% for menu in shop.Menu %}
           <li>
-            <a href="" class="getCart" menu_id="">
+            <a href="" class="getCart" menu_id="{{ menu.id }}" name="{{menu.name}}" price="{{menu.price}}">
               <h3 class="sub-title2">{{ menu.name }}</h3>
               <p class="body2">{{ menu.price }}원</p>
             </a>
@@ -114,4 +114,36 @@
   <i class="fa fa-shopping-cart" aria-hidden="true"></i>
   <i class="cart-item-counter">1</i>
 </a>
+<script>
+  $(document).ready(function () {
+    $(".getCart").click(function (e) {
+      e.preventDefault();
+      if (confirm('장바구니에 담으시겠습니까?')) {
+        var shop_id = {{ shop.id }}
+        var menu_id = $(this).attr('menu_id');
+        var name = $(this).attr('name');
+        var price = $(this).attr('price');
+
+        var cartList = {};
+
+        if (getCookie('cartList')) {
+          cartList = JSON.parse(getCookie('cartList'))
+          console.log('---->CartList',cartList);
+        }
+
+        cartList[menu_id] = {
+          shop_id,
+          menu_id,
+          price
+        }
+
+        console.log('--->cartList Object',cartList);
+        console.log('--->cartList Stringify',JSON.stringify(cartList));
+
+        setCookieHour('cartList',JSON.stringify(cartList), 3);
+        alert('장바구니에 담았습니다.')
+      }
+    });
+  });
+</script>
 {% endblock %}
