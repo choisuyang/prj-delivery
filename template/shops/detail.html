@@ -112,10 +112,21 @@
 {# cart #}  
 <a class="btn-cart">
   <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-  <i class="cart-item-counter">1</i>
+  <i class="cart-item-counter">{{ cartLength }}</i>
 </a>
+
 <script>
   $(document).ready(function () {
+    $('.btn-cart').click(function() {
+      var cartCounter = '{{cartLength}}'
+
+
+      if (cartCounter == 0) {
+          alert('장바구니에 담긴 상품이 없습니다.');
+      } else {
+        location.href="/cart";
+      }
+    })
     $(".getCart").click(function (e) {
       e.preventDefault();
       if (confirm('장바구니에 담으시겠습니까?')) {
@@ -128,19 +139,18 @@
 
         if (getCookie('cartList')) {
           cartList = JSON.parse(getCookie('cartList'))
-          console.log('---->CartList',cartList);
         }
 
         cartList[menu_id] = {
           shop_id,
           menu_id,
+          name,
           price
         }
 
-        console.log('--->cartList Object',cartList);
-        console.log('--->cartList Stringify',JSON.stringify(cartList));
-
         setCookieHour('cartList',JSON.stringify(cartList), 3);
+
+        $('.cart-item-counter').text(Object.keys(cartList).length)
         alert('장바구니에 담았습니다.')
       }
     });

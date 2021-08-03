@@ -2,12 +2,11 @@ function getCookie(cname) {
   var name = cname + "=";
   var decodedCookie = decodeURIComponent(unescape(document.cookie));
   var ca = decodedCookie.split(";");
-  console.log("----> decodeCookie", decodedCookie);
-  console.log("----> ca", ca);
+  console.log("--->ca", ca);
   for (var i = 0; i < ca.length; i++) {
     var c = ca[i];
     while (c.charAt(0) == " ") {
-      c = c.substring(name.length, c.length);
+      c = c.substring(1);
     }
     if (c.indexOf(name) == 0) {
       return c.substring(name.length, c.length);
@@ -20,7 +19,6 @@ function setCookieHour(name, value, hours) {
   var now = new Date();
   var time = now.getTime();
   time += 3600 * 1000 * hours;
-  console.log("---->Time", time);
   now.setTime(time);
-  document.cookie = name + "=" + escape(value) + ";path/; expires=" + now.toUTCString() + ";";
+  document.cookie = name + "=" + escape(value) + "; path=/; expires=" + now.toUTCString() + ";";
 }
