@@ -17,13 +17,14 @@ exports.get_shops_detail = async (req, res) => {
       cartList = JSON.parse(unescape(req.cookies.cartList));
 
       cartLength = Object.keys(cartList).length;
-      console.log("--->cartList", cartList);
+      // console.log("--->cartList", cartList);
 
       for (let key in cartList) {
         if (cartList[key].shop_id !== parseInt(req.params.id)) sameShops = false;
-        console.log("11111111", cartList[key].shop_id);
-        console.log("22222222", req.params.id);
-        console.log("333333", cartList[key].shop_id !== parseInt(req.params.id));
+
+        // console.log("11111111", cartList[key].shop_id);
+        // console.log("22222222", req.params.id);
+        // console.log("333333", cartList[key].shop_id !== parseInt(req.params.id));
       }
     }
 

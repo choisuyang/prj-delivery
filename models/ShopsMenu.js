@@ -11,5 +11,18 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
+  ShopsMenu.associate = (models) => {
+    ShopsMenu.belongsToMany(models.Checkout, {
+      through: {
+        model: "CheckoutMenu",
+        unique: false,
+      },
+      as: "Checkout",
+      foreignKey: "menu_id",
+      sourceKey: "id",
+      constraints: "false",
+    });
+  };
+
   return ShopsMenu;
 };
