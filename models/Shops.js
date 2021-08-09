@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     thumbnail: { type: DataTypes.STRING, comment: "섬네일" },
     address: { type: DataTypes.STRING, comment: "주소" },
     location: { type: DataTypes.STRING, comment: "상세주소" },
+    geo: { type: DataTypes.GEOMETRY("POINT"), commnet: "위도,경도" },
     phone: { type: DataTypes.STRING, comment: "전화번호" },
     open_time: { type: DataTypes.STRING, comment: "운영시간" },
     cell_phone: { type: DataTypes.STRING, comment: "핸드폰번호" },

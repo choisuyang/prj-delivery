@@ -37,11 +37,15 @@
     <link rel="stylesheet" href="/static/css/common.css" />
     <link rel="stylesheet" href="/static/css/style.css" />
     <script src="/static/js/common.js"></script>
+    <script
+      type="text/javascript"
+      src="//dapi.kakao.com/v2/maps/sdk.js?appkey={{ map_api.KAKAO_JAVASCRIPT_KEY  }}&libraries=services"
+    ></script>
     <!-- 프론트 적용 -->
   </head>
   <body>
     <div class="wrap">
-      {% include "layout/sideBar.html" %}
+      {% include "layout/sideBar.html" %} {{map_api | dump}}
       <!-- header -->
       <header class="container header">
         <div class="row">
