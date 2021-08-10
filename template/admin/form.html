@@ -73,6 +73,16 @@
     }
 
   )
+
+  {% if shop.address and shop.geo %}
+    mapSearchByAddess(
+        mapContainer,
+        '#map_area',
+        'input[name=geo]',
+        $('input[name=name]'),
+        $('input[name=address]')
+      )
+  {% endif %}
   $('#map_search').click(function() {
     var $name = $('input[name=name]');
     var $address = $('input[name=address]');

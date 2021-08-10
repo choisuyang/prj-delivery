@@ -59,7 +59,17 @@ exports.post_shops_edit = async (req, res) => {
   const fs = require("fs");
   const path = require("path");
   const uploadDir = path.join(__dirname, "../../uploads");
-  console.log("file-->", req.file);
+  // console.log("file-->", req.file);
+
+  req.body.geo = {
+    type: "Point",
+    coordinates: [
+      // 경도
+      req.body.geo.split(",")[0],
+      // 위도
+      req.body.geo.split(",")[1],
+    ],
+  };
   try {
     const shop = await models.Shops.findByPk(req.params.id);
     if (req.file && shop.thumbnail) {
