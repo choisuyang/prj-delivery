@@ -34,11 +34,15 @@
   </section>
   <section class="row restaurant">
     <div class="col-xs-7 col-xs-offset-5">
-      <button type="button" class="btn btn-link btn-sort active">
+      <a
+        id="orderByNear"
+        type="button"
+        class="btn btn-link btn-sort {% if req_query.lat and req_query.lng %}active {%endif%}"
+      >
         <i class="fa fa-map" aria-hidden="true"></i>
         <i class="fa fa-arrows-h" aria-hidden="true"></i>
         <span>거리순</span>
-      </button>
+      </a>
       <button type="button" class="btn btn-link btn-sort">
         <i class="fa fa-heart" aria-hidden="true"></i>
         <span>인기순</span>
@@ -47,56 +51,36 @@
     <div class="col-xs-12">
       <h2 class="a11y-hidden">식당 리스트</h2>
       <ul class="row restaurant-list">
+        {% for shop in shops %}
         <li class="col-xs-6">
-          <a href="">
+          <a href="/shops/{{shop.id}}">
             <div class="thumb">
-              <img src="static/images/thumb.jpg" alt="" />
+              <img src="/uploads/{{shop.thumbnail}}" alt="" />
             </div>
-            <h3 class="name sub-title2">식당</h3>
-            <p class="address body2">미왕빌딩 15층</p>
+            <h3 class="name sub-title2">{{shop.name}}</h3>
+            <p class="address body2">{{ shop.address}}</p>
           </a>
         </li>
-        <li class="col-xs-6">
-          <a href="">
-            <div class="thumb">
-              <img src="static/images/thumb.jpg" alt="" />
-            </div>
-            <h3 class="name sub-title2">식당</h3>
-            <p class="address body2">미왕빌딩 15층</p>
-          </a>
-        </li>
-        <li class="col-xs-6">
-          <a href="">
-            <div class="thumb">
-              <img src="static/images/thumb.jpg" alt="" />
-            </div>
-            <h3 class="name sub-title2">식당</h3>
-            <p class="address body2">미왕빌딩 15층</p>
-          </a>
-        </li>
-        <li class="col-xs-6">
-          <a href="">
-            <div class="thumb">
-              <img src="static/images/thumb.jpg" alt="" />
-            </div>
-            <h3 class="name sub-title2">식당</h3>
-            <p class="address body2">미왕빌딩 15층</p>
-          </a>
-        </li>
+        {% endfor %}
       </ul>
     </div>
   </section>
 </main>
 <script src="/static/js/kakaomap.js"></script>
 <script>
+
   var shops = {{ shops | dump | safe }}
+  window._userGeo = {
+   lat: {{map_api.default.lat}},
+    lng : {{map_api.default.lng}},
+  }
 
   var mapContainer = new kakao.maps.Map(
       document.getElementById('map_area'),
       {
         center: new kakao.maps.LatLng(
-          {{map_api.default.lat}},
-          {{map_api.default.lng}}
+          window._userGeo.lat,
+          window._userGeo.lng,
         ),
         level: 3
       }
@@ -143,7 +127,33 @@
     mapContainer.setCenter(new kakao.maps.LatLng(
       {{map_api.default.lat}},
       {{map_api.default.lng}},
-
     ))
+
+  if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      window._userGeo.lat = position.coords.latitude;
+      window._userGeo.lng = position.coords.longitude;
+    mapContainer.setCenter(new kakao.maps.LatLng(
+      window._userGeo.lat,
+      window._userGeo.lng
+    ))
+    },
+    function(error) {
+      if(error.code ==1 ) {
+        alert('위치정보를 등록해주세요');
+      } else if (error.code == 2) {
+        alert('유효하지 않는 위치입니다.')
+      }
+    },{timeout: 3000})
+  } else {
+    alert('지도관련 api를 사용할 수 없습니다');
+  }
+
+  $(document).ready(function() {
+    $('#orderByNear').click(function() {
+      location.href = `/?lat=${window._userGeo.lat}&lng=${window._userGeo.lng}`
+    })
+
+  })
 </script>
 {% endblock %}

@@ -3,9 +3,30 @@ const router = Router();
 const models = require("../../models");
 
 router.get("/", async (req, res) => {
-  const shops = await models.Shops.findAll();
+  try {
+    const shops = await models.Shops.findAll({
+      ...(req.query.lat && req.query.lng
+        ? {
+            attributes: {
+              include: [
+                [
+                  models.sequelize.literal(`
+                ST_DISTANCE_SPHERE( POINT( 
+                    ${req.query.lng}, 
+                    ${req.query.lat} 
+                  ), geo)`),
+                  "distance",
+                ],
+              ],
+            },
 
-  res.render("home.html", { shops });
+            order: [[models.sequelize.literal("distance"), "asc"]],
+          }
+        : ""),
+    });
+
+    res.render("home.html", { shops });
+  } catch (e) {}
 });
 
 module.exports = router;
