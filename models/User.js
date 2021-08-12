@@ -30,6 +30,19 @@ module.exports = function (sequelize, DataTypes) {
     }
   );
 
+  User.associate = (models) => {
+    User.belongsToMany(models.Shops, {
+      through: {
+        model: "LikeShops",
+        unique: false,
+      },
+      as: "Likes",
+      foreignKey: "user_id",
+      source: "id",
+      constraints: false,
+    });
+  };
+
   User.beforeCreate((user, _) => {
     user.password = passwordHash(user.password);
   });
