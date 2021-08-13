@@ -14,6 +14,7 @@ exports.get_shops_write = (req, res) => {
 
 exports.post_shops_write = async (req, res) => {
   // console.log("--->post_write", req.body);
+
   try {
     // 위도 경도 저장
     req.body.geo = {

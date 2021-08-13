@@ -4,8 +4,16 @@ exports.get_shops_detail = async (req, res) => {
   try {
     const shop = await models.Shops.findOne({
       where: { id: req.params.id },
-      include: ["Menu"],
+      include: ["Menu", "LikeUser"],
     });
+
+    let active = false;
+    if (req.isAuthenticated()) {
+      const user = await models.User.findByPk(req.user.id);
+      active = await shop.hasLikeUser(user);
+    }
+
+    const countLike = await shop.countLikeUser();
 
     let cartList = {}; //장바구니 리스트
     //쿠키가 있는지 확인해서 뷰로 넘겨준다
@@ -28,7 +36,7 @@ exports.get_shops_detail = async (req, res) => {
       }
     }
 
-    res.render("shops/detail.html", { shop, cartLength, sameShops });
+    res.render("shops/detail.html", { shop, countLike, active, cartLength, sameShops });
   } catch (e) {}
 };
 

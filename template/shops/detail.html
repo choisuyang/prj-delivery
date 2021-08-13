@@ -47,10 +47,22 @@
       <li>{{ shop.address }}</li>
       <li>{{ shop.phone }}</li>
       <li>
+        {% if isLogin %}
         <button id="handleLike" shop_id="{{ shop.id }}" type="button" class="btn btn-link btn-like">
           <i class="fa fa-heart" aria-hidden="true"></i>
-          <span>10</span>
+          <span>{{countLike}}</span>
         </button>
+        {% else %}
+        <a
+          href="/accounts/login"
+          shop_id="{{ shop.id }}"
+          type="button"
+          class="btn btn-link btn-like {% if active %} active {% endif %}"
+        >
+          <i class="fa fa-heart" aria-hidden="true"></i>
+          <span>{{countLike}}</span>
+        </a>
+        {% endif %}
       </li>
     </ul>
   </section>
@@ -153,59 +165,57 @@
       infowindow.open(mapContainer, marker);
 
     {% endif %}
-            $(document).ready(function () {
+  $(document).ready(function () {
+    $('#handleLike').click(function(e){
+      e.preventDefault();
+      var shop_id = parseInt($(this).attr('shop_id'));
+      var self = $(this);
 
-              $('#handleLike').click(function(){
+      // 좋아요를 누르지 않은 경우
+      if(!$(this).hasClass('active')){
 
-    var shop_id = parseInt($(this).attr('shop_id'));
-    var self = $(this);
+        $.ajax({
+            url : '/shops/like/'+ shop_id,
+            type : 'post',
+        })
+        .done(function(result){
 
-    // 좋아요를 누르지 않은 경우
-    if(!$(this).hasClass('active')){
+            if(result.status.length){
+              self.addClass('active');
+              var count = parseInt(self.children('span').text());
+              self.children('span').text(count+1);
+            }else{
+              alert('이미 담았습니다.');
+            }
 
 
-      $.ajax({
-          url : '/shops/like/'+ shop_id,
-          type : 'post',
-      })
-      .done(function(result){
+        })
+        .fail(function(){
+            console.log('오류발생');
+        })
 
-          if(result.status.length){
-            self.addClass('active');
+
+      }else{
+
+        $.ajax({
+            url : '/shops/like/'+ shop_id,
+            type : 'delete',
+        })
+        .done(function(){
+
+            self.removeClass('active');
             var count = parseInt(self.children('span').text());
-            self.children('span').text(count+1);
-          }else{
-            alert('이미 담았습니다.');
-          }
+            self.children('span').text( ( (count==1) ? 0 : count-1 ) );
+
+        })
+        .fail(function(){
+            console.log('오류발생');
+        })
 
 
-      })
-      .fail(function(){
-          console.log('오류발생');
-      })
+      }
 
-
-    }else{
-
-      $.ajax({
-          url : '/shops/like/'+ shop_id,
-          type : 'delete',
-      })
-      .done(function(){
-
-          self.removeClass('active');
-          var count = parseInt(self.children('span').text());
-          self.children('span').text( ( (count==1) ? 0 : count-1 ) );
-
-      })
-      .fail(function(){
-          console.log('오류발생');
-      })
-
-
-    }
-
-  })
+    })
 
               {% if not sameShops %}
                 alert('장바구니에는 같은 가게의 메뉴만 담을 수 있습니다. 장바구니 삭제후 진행해주세요.');
