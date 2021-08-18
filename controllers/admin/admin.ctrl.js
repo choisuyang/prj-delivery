@@ -143,3 +143,12 @@ exports.get_order_edit = async (req, res) => {
     res.render("admin/order_edit.html", { checkout });
   } catch (e) {}
 };
+
+exports.post_order_edit = async (req, res) => {
+  try {
+    await models.Checkout.update(req.body, {
+      where: { id: req.params.id },
+    });
+    res.redirect("/admin/order");
+  } catch (e) {}
+};
