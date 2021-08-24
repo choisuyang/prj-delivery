@@ -38,6 +38,17 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: "id",
       constraints: false,
     });
+
+    Shops.belongsToMany(models.Tag, {
+      through: {
+        model: "TagShop",
+        unique: false,
+      },
+      as: "Tag",
+      foreignKey: "shop_id",
+      sourceKey: "id",
+      constraints: false,
+    });
   };
 
   Shops.prototype.dateFormat = (date) => moment(date).format("YYYY-MM-DD");
